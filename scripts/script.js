@@ -1,6 +1,11 @@
 const menu = document.querySelector(".products-list");
 const cartTitle = document.querySelector("h2");
+const cartItems = document.querySelector(".content");
+const cart = document.querySelector(".cart");
+let cartEmpty = cart.innerHTML;
+let clone;
 let globalCount = 0;
+let overallPrice = 0;
 async function populate()
 {
     const response = await fetch("data.json");
@@ -39,17 +44,25 @@ function populateMenu(data)
         pr.textContent = "$" + (desert.price).toFixed(2);
         newDiv.appendChild(pr);
         menu.appendChild(newDiv);
-        add.addEventListener("click", ()=> addActions(add, imag));
+        add.addEventListener("click", ()=> addActions(add, imag, n.textContent, pr.textContent));
     }
 }
 populate();
 
 
 
-function addActions(button, pic) {
-    // Initialize the count for this specific button if not set
+function addActions(button, pic, name, price) {
+  if(globalCount === 0){
+    cartEmpty = cart.innerHTML;
+    cartItems.innerHTML = "";
+    clone = cart.cloneNode(true);
+  }
     if (!button.count) {
       button.count = 1;
+    }
+    if(!button.finalPrice)
+    {
+      button.finalPrice = price;
     }
     if (!button.originalHTML) {
         button.originalHTML = button.innerHTML;
@@ -57,6 +70,7 @@ function addActions(button, pic) {
         button.originalBackgroundColor = button.style.backgroundColor;
         button.originalBorder = button.style.border;
     }
+    overallPrice += parseFloat(price.slice(1));
     button.disabled = true;
     globalCount++;
     cartTitle.textContent = `Your Cart(${globalCount})`;
@@ -94,7 +108,56 @@ function addActions(button, pic) {
     plusIcon.style.height = "15px";
     plusIcon.style.cursor = "pointer";
     button.appendChild(plusIcon);
-    
+    const item = document.createElement("div");
+    item.classList.add("cart-item");
+    const info = document.createElement("div");
+    info.classList.add("cart-info");
+    const p1 = document.createElement("p");
+    const p2 = document.createElement("p");
+    const spanName = document.createElement("span");
+    spanName.textContent = name;
+    p1.appendChild(spanName);
+    const spanCount = document.createElement("span");
+    spanCount.textContent = button.count + "x";
+    const spanDefaulPrice = document.createElement("span");
+    spanDefaulPrice.textContent = "@" + price;
+    const spanFinalPrice = document.createElement("span");
+    spanFinalPrice.textContent = button.finalPrice;
+    const d = document.createElement("img");
+    d.classList.add("delete-button");
+    d.src = "../assets/images/icon-remove-item.svg";
+    p2.appendChild(spanCount);
+    p2.appendChild(spanDefaulPrice);
+    p2.appendChild(spanFinalPrice);
+    info.appendChild(p1);
+    info.appendChild(p2);
+    item.appendChild(info);
+    item.appendChild(d);
+    cartItems.appendChild(item);
+    if(!document.querySelector(".totalPrice"))
+    {
+        const total = document.createElement("div");
+        total.classList.add("totalPrice");
+        const ord = document.createElement("p");
+        ord.textContent = "Total price";
+        const prs = document.createElement("p");
+        prs.textContent = "$" + overallPrice;
+        prs.classList.add("op");
+        total.appendChild(ord);
+        total.appendChild(prs);
+        document.querySelector(".second-block").appendChild(total);
+    }else{
+      const blo = document.querySelector(".op");
+      blo.textContent = "$" + overallPrice;
+    }
+    if(!document.querySelector(".confirm-button"))
+    {
+      const cb = document.createElement("button");
+      cb.classList.add("confirm-button");
+      cb.textContent = "Confirm Order"
+      document.querySelector(".button").appendChild(cb);
+    }
+
     // Event listeners
     plusIcon.addEventListener("click", (e) => {
       e.stopPropagation(); // stop the click from bubbling to the button itself
@@ -102,6 +165,7 @@ function addActions(button, pic) {
       counter.textContent = button.count;
       globalCount++;
         cartTitle.textContent = `Your Cart(${globalCount})`;
+        spanFinalPrice.textContent
     });
   
     minusIcon.addEventListener("click", (e) => {
@@ -118,8 +182,9 @@ function addActions(button, pic) {
         button.style.border = button.originalBorder;
         button.disabled = false;
         pic.style.border = "none";
+        cart.replaceWith(clone);
         return;
       }
     });
-  }
+  } 
   
