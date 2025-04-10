@@ -188,9 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
     im = cbtn.productImage;
     im.style.border = "3px solid hsl(14, 86%, 42%)";
     cbtn.innerHTML = 
-    `<img src="../assets/images/icon-decrement-quantity.svg" class="minus-btn" alt="–">
+    `<img src="assets/images/icon-decrement-quantity.svg" class="minus-btn" alt="–">
     <span class="counter">1</span>
-    <img src="../assets/images/icon-increment-quantity.svg" class="plus-btn" alt="+">`;
+    <img src="assets/images/icon-increment-quantity.svg" class="plus-btn" alt="+">`;
     cbtn.querySelector(".minus-btn").addEventListener("click", (e)=>{
       e.stopPropagation();
       decreaseQuantity(cbtn.dataset.name);
