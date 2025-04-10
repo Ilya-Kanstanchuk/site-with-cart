@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load and render products
   function loadProducts() {
-    fetch("/data.json")
+    fetch("data.json")
     .then((response) => response.json())
     .then((data) =>{
         renderProductsList(data);  
