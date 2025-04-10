@@ -245,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
       conclusion.appendChild(cartElement);
     }
     const total = document.createElement("div");
+    total.classList.add("final-cost");
     total.innerHTML = `<p>Order Total</p>
       <p>$${cart.totalPrice}</p>`;
     conclusion.appendChild(total);
